@@ -1,0 +1,256 @@
+<?php
+include_once('simplehtmldom/simple_html_dom.php');
+
+function tbr_blocks_block_info() {    
+  $blocks['tbr_hr_jobs'] = array(
+    // info: The name of the block.
+    'info' => t('TBR System Office Jobs'),
+  );
+  $blocks['tbr_facilities_project_designers'] = array(
+    // info: The name of the block.
+    'info' => t('TBR Projects Needing Designers'),
+  );
+  $blocks['tbr_facilities_designers_manual'] = array(
+    // info: The name of the block.
+    'info' => t('TBR Facilities Designer Manual'),
+  );
+  $blocks['tbr_facilities_master_plans'] = array(
+    // info: The name of the block.
+    'info' => t('TBR Facilities Master Plans'),
+  );
+    $blocks['tbr_facilities_campus_contacts'] = array(
+    // info: The name of the block.
+    'info' => t('TBR Facilities Campus Contacts'),
+  );
+  $blocks['tbr_thec_funding_formula'] = array(
+    // info: The name of the block.
+    'info' => t('THEC Funding Formula Page'),
+  );
+  
+  $blocks['tbr_facilities_construction_reps'] = array(
+    // info: The name of the block.
+    'info' => t('TBR Facilities Construction Representatives'),
+  );
+
+  return $blocks;
+}
+
+function tbr_blocks_block_view($delta = '') {
+  $block = array();
+  // The $delta parameter tells us which block is being requested.
+  switch ($delta) {
+    case 'tbr_hr_jobs':
+      // Create your block content here
+      $block['subject'] = t('TBR System Office Jobs');
+      $block['content'] = tbr_hr_jobs();
+      break;
+      
+    case 'tbr_facilities_project_designers':
+      // Create your block content here
+      $block['subject'] = t('TBR Projects Needing Designers');
+      $block['content'] = tbr_facilities_project_designers();
+      break;
+      
+    case 'tbr_facilities_designers_manual':
+      // Create your block content here
+      $block['subject'] = t('TBR Facilities Designer Manual');
+      $block['content'] = tbr_facilities_designers_manual();
+      break;
+      
+     case 'tbr_facilities_master_plans':
+      // Create your block content here
+      $block['subject'] = t('TBR Facilities Master Plans');
+      $block['content'] = tbr_facilities_master_plans();
+      break;
+      
+     case 'tbr_facilities_campus_contacts':
+      // Create your block content here
+      $block['subject'] = t('TBR Facilities Campus Contacts');
+      $block['content'] = tbr_facilities_campus_contacts();
+      break;
+      
+      case 'tbr_thec_funding_formula':
+      // Create your block content here
+      $block['subject'] = t('Outcomes Based Funding Resources');
+      $block['content'] = tbr_thec_funding_formula();
+      break;
+      
+      case 'tbr_facilities_construction_reps':
+      // Create your block content here
+      $block['subject'] = t('TBR Facilities Construction Representatives');
+      $block['content'] = tbr_facilities_construction_reps();
+      break;
+  }
+
+  return $block;
+}
+
+function tbr_hr_jobs() {
+	$html = file_get_html('https://jobs.tbr.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&225=&query_organizational_tier_3_id=any&435=&642=7&commit=Search');
+	
+	$lilly = '';
+	
+	foreach($html->find('div.job-item-posting') as $post) {
+	   $lilly .= $post;
+	}
+	$html2 = str_get_html($lilly);
+	foreach($html2->find("a") as $a) {
+	   $a->href = "https://jobs.tbr.edu" . $a->href;
+	}
+	foreach($html2->find("td") as $td) {
+	   if($td->colspan =="5") {
+		   $td->colspan = "6";
+	   }
+	}
+	ob_start();
+	echo $html2;
+	return ob_get_clean();
+	  
+}
+
+function tbr_facilities_project_designers() {
+	$html = file_get_html('http://ofd.tbr.edu/ProjectsRequiringDesigners/ProjectsRequiringDesigners.aspx');
+	
+	$lilly = '';
+	
+	foreach($html->find('table#ctl00_Content_gvProjects') as $post) {
+	   $lilly .= $post;
+	}
+	
+	$html2 = str_get_html($lilly);
+	
+	foreach($html2->find("h2") as $h2) {
+	   $h2->outertext = "";
+	}
+	
+	//foreach($html2->find("a") as $a) {
+	//   $a->href = "http://ofd.tbr.edu/ProjectsRequiringDesigners/" . $a->href;
+	//}
+	
+	foreach($html2->find("input#ctl00_Content_btnPrintableView") as $remove) {
+	   $remove->outertext = "";
+	}
+
+	ob_start();
+	echo $html2;
+	return ob_get_clean();
+	
+}
+
+function tbr_facilities_designers_manual() {
+	$html = file_get_html('http://ofd.tbr.edu/DesignersManual/DesignersManual.aspx');
+	
+	$lilly = '';
+	
+	foreach($html->find('div#content-main') as $post) {
+	   $lilly .= $post;
+	}
+	$html2 = str_get_html($lilly);
+	
+	foreach($html2->find("h2") as $h2) {
+	   $h2->outertext = "";
+	}
+	foreach($html2->find("a") as $a) {
+	   $a->href = "http://ofd.tbr.edu/DesignersManual/" . $a->href;
+	}
+
+	ob_start();
+	echo $html2;
+	return ob_get_clean();
+	
+}
+
+function tbr_facilities_master_plans() {
+	$html = file_get_html('http://ofd.tbr.edu/MasterPlan/MasterPlan.aspx');
+	
+	$lilly = '';
+	
+	foreach($html->find('div#content-main') as $post) {
+	   $lilly .= $post;
+	}
+	$html2 = str_get_html($lilly);
+	
+	foreach($html2->find("h2") as $h2) {
+	   $h2->outertext = "";
+	}
+	foreach($html2->find("a") as $a) {
+	   $a->href = "http://ofd.tbr.edu/MasterPlan/" . $a->href;
+	}
+	foreach($html2->find("table") as $table) {
+	   $table->style = "";
+	}
+
+	ob_start();
+	echo $html2;
+	return ob_get_clean();
+	
+}
+
+function tbr_facilities_campus_contacts() {
+	
+	$html = file_get_html('http://ofd.tbr.edu/General/Staff.aspx');
+	
+	$lilly = '';
+	
+	foreach($html->find('table#ctl00_Content_gvCampusAssignments') as $post) {
+	   $lilly .= $post;
+	}
+		
+	$html2 = str_get_html($lilly);
+	
+	
+	foreach($html2->find("table") as $table) {
+	   $table->style = "";
+	}
+
+	ob_start();
+	echo $html2;
+	return ob_get_clean();
+	
+}
+
+function tbr_thec_funding_formula() {
+	$html = file_get_html('http://www.state.tn.us/thec/Divisions/Fiscal/outcomes_resources.shtml');
+	
+	$lilly = '';
+	
+	foreach($html->find('div.Blurb') as $post) {
+	   $lilly .= $post;
+	}
+	$html2 = str_get_html($lilly);
+	foreach($html2->find("a") as $a) {
+	   $a->href = "http://www.state.tn.us/thec/Divisions/Fiscal/" . $a->href;
+	}
+	foreach($html2->find("td") as $td) {
+	   if($td->colspan =="5") {
+		   $td->colspan = "6";
+	   }
+	}
+	ob_start();
+	echo $html2;
+	return ob_get_clean();
+	  
+}
+
+function tbr_facilities_construction_reps() {
+	
+	$html = file_get_html('http://ofd.tbr.edu/General/Staff.aspx');
+	
+	$lilly = '';
+	
+	foreach($html->find('table#ctl00_Content_gvConstructionReps') as $post) {
+	   $lilly .= $post;
+	}
+	
+	$html2 = str_get_html($lilly);
+	
+	
+	foreach($html2->find("table") as $table) {
+	   $table->style = "";
+	}
+
+	ob_start();
+	echo $html2;
+	return ob_get_clean();
+	
+}
