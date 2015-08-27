@@ -1,7 +1,7 @@
 <?php
 include_once('simplehtmldom/simple_html_dom.php');
 
-function tbr_blocks_block_info() {    
+function tbr_blocks_block_info() {
   $blocks['tbr_hr_jobs'] = array(
     // info: The name of the block.
     'info' => t('TBR System Office Jobs'),
@@ -26,10 +26,15 @@ function tbr_blocks_block_info() {
     // info: The name of the block.
     'info' => t('THEC Funding Formula Page'),
   );
-  
+
   $blocks['tbr_facilities_construction_reps'] = array(
     // info: The name of the block.
     'info' => t('TBR Facilities Construction Representatives'),
+  );
+
+  $blocks['tbr_facilities_construction_bids'] = array(
+    // info: The name of the block.
+    'info' => t('TBR Facilities Construction Bid List'),
   );
 
   return $blocks;
@@ -44,41 +49,47 @@ function tbr_blocks_block_view($delta = '') {
       $block['subject'] = t('TBR System Office Jobs');
       $block['content'] = tbr_hr_jobs();
       break;
-      
+
     case 'tbr_facilities_project_designers':
       // Create your block content here
       $block['subject'] = t('TBR Projects Needing Designers');
       $block['content'] = tbr_facilities_project_designers();
       break;
-      
+
     case 'tbr_facilities_designers_manual':
       // Create your block content here
       $block['subject'] = t('TBR Facilities Designer Manual');
       $block['content'] = tbr_facilities_designers_manual();
       break;
-      
+
      case 'tbr_facilities_master_plans':
       // Create your block content here
       $block['subject'] = t('TBR Facilities Master Plans');
       $block['content'] = tbr_facilities_master_plans();
       break;
-      
+
      case 'tbr_facilities_campus_contacts':
       // Create your block content here
       $block['subject'] = t('TBR Facilities Campus Contacts');
       $block['content'] = tbr_facilities_campus_contacts();
       break;
-      
+
       case 'tbr_thec_funding_formula':
       // Create your block content here
       $block['subject'] = t('Outcomes Based Funding Resources');
       $block['content'] = tbr_thec_funding_formula();
       break;
-      
+
       case 'tbr_facilities_construction_reps':
       // Create your block content here
       $block['subject'] = t('TBR Facilities Construction Representatives');
       $block['content'] = tbr_facilities_construction_reps();
+      break;
+
+      case 'tbr_facilities_construction_bids':
+      // Create your block content here
+      $block['subject'] = t('TBR Facilities Construction Bid List');
+      $block['content'] = tbr_facilities_construction_bids();
       break;
   }
 
@@ -87,9 +98,9 @@ function tbr_blocks_block_view($delta = '') {
 
 function tbr_hr_jobs() {
 	$html = file_get_html('https://jobs.tbr.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&225=&query_organizational_tier_3_id=any&435=&642=7&commit=Search');
-	
+
 	$lilly = '';
-	
+
 	foreach($html->find('div.job-item-posting') as $post) {
 	   $lilly .= $post;
 	}
@@ -105,28 +116,28 @@ function tbr_hr_jobs() {
 	ob_start();
 	echo $html2;
 	return ob_get_clean();
-	  
+
 }
 
 function tbr_facilities_project_designers() {
-	$html = file_get_html('http://ofd.tbr.edu/ProjectsRequiringDesigners/ProjectsRequiringDesigners.aspx');
-	
+	$html = file_get_html('http://tbrofd.tbr.edu/ProjectsRequiringDesigners/ProjectsRequiringDesigners.aspx');
+
 	$lilly = '';
-	
+
 	foreach($html->find('table#ctl00_Content_gvProjects') as $post) {
 	   $lilly .= $post;
 	}
-	
+
 	$html2 = str_get_html($lilly);
-	
+
 	foreach($html2->find("h2") as $h2) {
 	   $h2->outertext = "";
 	}
-	
+
 	//foreach($html2->find("a") as $a) {
 	//   $a->href = "http://ofd.tbr.edu/ProjectsRequiringDesigners/" . $a->href;
 	//}
-	
+
 	foreach($html2->find("input#ctl00_Content_btnPrintableView") as $remove) {
 	   $remove->outertext = "";
 	}
@@ -134,47 +145,47 @@ function tbr_facilities_project_designers() {
 	ob_start();
 	echo $html2;
 	return ob_get_clean();
-	
+
 }
 
 function tbr_facilities_designers_manual() {
-	$html = file_get_html('http://ofd.tbr.edu/DesignersManual/DesignersManual.aspx');
-	
+	$html = file_get_html('http://tbrofd.tbr.edu/DesignersManual/DesignersManual.aspx');
+
 	$lilly = '';
-	
+
 	foreach($html->find('div#content-main') as $post) {
 	   $lilly .= $post;
 	}
 	$html2 = str_get_html($lilly);
-	
+
 	foreach($html2->find("h2") as $h2) {
 	   $h2->outertext = "";
-	}
+	}https://www.tbr.edu/admin/reports
 	foreach($html2->find("a") as $a) {
-	   $a->href = "http://ofd.tbr.edu/DesignersManual/" . $a->href;
+	   $a->href = "http://tbrofd.tbr.edu/DesignersManual/" . $a->href;
 	}
 
 	ob_start();
 	echo $html2;
 	return ob_get_clean();
-	
+
 }
 
 function tbr_facilities_master_plans() {
-	$html = file_get_html('http://ofd.tbr.edu/MasterPlan/MasterPlan.aspx');
-	
+	$html = file_get_html('http://tbrofd.tbr.edu/MasterPlan/MasterPlan.aspx');
+
 	$lilly = '';
-	
+
 	foreach($html->find('div#content-main') as $post) {
 	   $lilly .= $post;
 	}
 	$html2 = str_get_html($lilly);
-	
+
 	foreach($html2->find("h2") as $h2) {
 	   $h2->outertext = "";
 	}
 	foreach($html2->find("a") as $a) {
-	   $a->href = "http://ofd.tbr.edu/MasterPlan/" . $a->href;
+	   $a->href = "http://tbrofd.tbr.edu/MasterPlan/" . $a->href;
 	}
 	foreach($html2->find("table") as $table) {
 	   $table->style = "";
@@ -183,22 +194,22 @@ function tbr_facilities_master_plans() {
 	ob_start();
 	echo $html2;
 	return ob_get_clean();
-	
+
 }
 
 function tbr_facilities_campus_contacts() {
-	
-	$html = file_get_html('http://ofd.tbr.edu/General/Staff.aspx');
-	
+
+	$html = file_get_html('http://tbrofd.tbr.edu/General/Staff.aspx');
+
 	$lilly = '';
-	
+
 	foreach($html->find('table#ctl00_Content_gvCampusAssignments') as $post) {
 	   $lilly .= $post;
 	}
-		
+
 	$html2 = str_get_html($lilly);
-	
-	
+
+
 	foreach($html2->find("table") as $table) {
 	   $table->style = "";
 	}
@@ -206,14 +217,14 @@ function tbr_facilities_campus_contacts() {
 	ob_start();
 	echo $html2;
 	return ob_get_clean();
-	
+
 }
 
 function tbr_thec_funding_formula() {
 	$html = file_get_html('http://www.state.tn.us/thec/Divisions/Fiscal/outcomes_resources.shtml');
-	
+
 	$lilly = '';
-	
+
 	foreach($html->find('div.Blurb') as $post) {
 	   $lilly .= $post;
 	}
@@ -229,22 +240,22 @@ function tbr_thec_funding_formula() {
 	ob_start();
 	echo $html2;
 	return ob_get_clean();
-	  
+
 }
 
 function tbr_facilities_construction_reps() {
-	
-	$html = file_get_html('http://ofd.tbr.edu/General/Staff.aspx');
-	
+
+	$html = file_get_html('http://tbrofd.tbr.edu/General/Staff.aspx');
+
 	$lilly = '';
-	
+
 	foreach($html->find('table#ctl00_Content_gvConstructionReps') as $post) {
 	   $lilly .= $post;
 	}
-	
+
 	$html2 = str_get_html($lilly);
-	
-	
+
+
 	foreach($html2->find("table") as $table) {
 	   $table->style = "";
 	}
@@ -252,5 +263,83 @@ function tbr_facilities_construction_reps() {
 	ob_start();
 	echo $html2;
 	return ob_get_clean();
-	
+
+}
+
+
+function tbr_facilities_construction_bids() {
+  /*
+  ** Connect to MSSQL database:
+  */
+
+  $server = 'tbrfac02.bna.tbr.state.tn.us';
+  $data_source = 'TBROFD';
+  $user = 'pitsra';
+  $password = 'zaybx10293';
+  $table = 'tbrpits';
+
+  /*
+  PHP MSSQL Example
+
+  Replace data_source_name with the name of your data source.
+  Replace database_username and database_password
+  with the SQL Server database username and password.
+  */
+
+  // Connect to the data source and get a handle for that connection.
+  $conn=odbc_connect($data_source,$user,$password);
+  if (!$conn){
+      if (phpversion() < '4.0'){
+        //exit("Connection Failed: . $php_errormsg" );
+        exit("The connection to the bid's program is currently unavailable. Please try again later." );
+
+      }
+      else{
+        //exit("Connection Failed:" . odbc_errormsg() );
+        exit("The connection to the bid's database is currently unavailable. Please try again later." );
+      }
+  }
+
+  // This query generates a result set with one record in it.
+  $sql="select * from vw_ConstructionBidList order by BidDateTime, SBCNumber";
+
+  # Execute the statement.
+  $rs=odbc_exec($conn,$sql);
+
+  // Fetch and display the result set value.
+  if (!$rs){
+      exit("Error in SQL");
+  }
+  $tableBuild = "<table>";
+
+  $tableBuild .= '<thead><tr>';
+  $tableBuild .= '<th>Deadline</th>';
+  $tableBuild .= '<th>Project</th>';
+  $tableBuild .= '<th>Description</th>';
+  $tableBuild .= '<th>Solicitor</th>';
+  $tableBuild .= '</tr></thead>';
+  $tableBuild .= '<tbody>';
+
+  while (odbc_fetch_row($rs)){
+      $format = 'Y-m-d H:i:s';
+      $date = DateTime::createFromFormat($format, odbc_result($rs, "BidDateTime"));
+
+      $tableBuild .= '<tr>';
+      $tableBuild .= '<td class="nowrap">' . $date->format('m-d-Y g:i a') . '<br>' . odbc_result($rs, "BidLocation") . '<br>' . odbc_result($rs, "DeliveryMethod") . '</td>';
+      $tableBuild .= '<td class="nowrap">' . odbc_result($rs, "City") . ', ' . odbc_result($rs, "State") . '<br>' . odbc_result($rs, "SBCNumber") . '<br>' . odbc_result($rs, "FullName") . '<br>' . odbc_result($rs, "BidName") . '</td>';
+      $tableBuild .= '<td>' . odbc_result($rs, "BriefDescription") . '</td>';
+      $tableBuild .= '<td class="nowrap">' . odbc_result($rs, "Designer") . '<br>Contact: ' . odbc_result($rs, "DesignerPointOfContact") . '<br>' . odbc_result($rs, "DesignerPhone") . '<br>$' . number_format(odbc_result($rs, "PlanDepositAmount"), 2) . ' document deposit</td>';
+      $tableBuild .= '</tr>';
+  }
+  $tableBuild .= "</tbody></table>";
+  $tableBuild .= "<p>Note: All times are local to the bid location.</p>";
+
+
+  // Disconnect the database from the database handle.
+  odbc_close($conn);
+
+  ob_start();
+  echo $tableBuild;
+	return ob_get_clean();
+
 }
